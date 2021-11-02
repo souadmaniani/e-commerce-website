@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 function App() {
 	const [product] = useState({
 	  name: "Tesla Roadster",
-	  price: 64998.67,
+	  price: 1.0,
 	  description: "Cool car"
 	});
   
@@ -17,7 +17,6 @@ function App() {
 		{ token, product }
 	  );
 	  const { status } = response.data;
-	  console.log("Response:", response.data);
 	  if (status === "success") {
 		toast("Success! Check email for details", { type: "success" });
 	  } else {
