@@ -1,0 +1,26 @@
+{
+  "name": "e-commerce-website",
+  "version": "1.0.0",
+  "description": "Build a simple ecommerce website",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/souadmaniani/e-commerce-website.git"
+  },
+  "author": "souad maniani",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/souadmaniani/e-commerce-website/issues"
+  },
+  "homepage": "https://github.com/souadmaniani/e-commerce-website#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^6.0.12"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.14"
+  }
+}
