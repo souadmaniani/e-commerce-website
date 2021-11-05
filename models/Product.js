@@ -1,33 +1,36 @@
-
-const mongoose = require('mongoose');
-const {model, Schema} = mongoose;
+const mongoose = require("mongoose");
+const { model, Schema } = mongoose;
 
 // product has multiple colors && sizes && images
 const ProductSchema = new Schema({
-    title:{
+  title: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+  },
+  price: {
+    type: Number,
+  },
+  category: {
+    type: String,
+  },
+  colors: [
+    {
+      stock: {
+        type: Number,
+      },
+      image: {
         type: String,
-        required: true
+      },
+      images: {
+        type: Array[String],
+      },
+      color: {
+        type: String,
+      },
     },
-    description: {
-        type: String
-    },
-    price: {
-        type: Number
-    },
-    Category: {
-        type: String
-    },
-    stock: {
-        type: Number
-    },
-    image: {
-        type: String
-    },
-    images: {
-        type: Array[String]
-    },
-    color: {
-        type: String
-    },
-
-})
+  ],
+});
+module.exports = Product = model("products", ProductSchema);
