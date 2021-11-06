@@ -14,10 +14,10 @@ const ValidateRegisterInput = (data) => {
     errors.password = "Password is Required";
   else if (!validator.isLength(data.password, { min: 8, max: 30 }))
     errors.password = "Password must be between 8 and 30 caracters";
-  if (validator.isEmpty(data.password2))
-    errors.password2 = "Confirm Password is Required";
-  else if (!validator.equals(data.password, data.password2))
-    errors.password2 = "Password does not match";
+  // if (validator.isEmpty(data.password2))
+  //   errors.password2 = "Confirm Password is Required";
+  // else if (!validator.equals(data.password, data.password2))
+  //   errors.password2 = "Password does not match";
   return {
     isValid: isEmpty(errors),
     errors,

@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const { model, Schema } = mongoose;
 
-// product has multiple colors && sizes && images
 const ProductSchema = new Schema({
   title: {
     type: String,
@@ -13,24 +12,26 @@ const ProductSchema = new Schema({
   price: {
     type: Number,
   },
-  category: {
-    type: String,
-  },
-  colors: [
-    {
-      stock: {
-        type: Number,
-      },
-      image: {
-        type: String,
-      },
-      images: {
-        type: Array[String],
-      },
-      color: {
-        type: String,
-      },
+  attributes: {
+    categories: {
+      type: Array,
     },
-  ],
+    colors: {
+      type: Array,
+    },
+    sizes: {
+      type: Array,
+    },
+    stock: {
+      type: Array,
+    },
+    image: {
+      type: Array,
+    },
+    images: {
+      type: Array,
+    },
+  },
 });
+
 module.exports = Product = model("products", ProductSchema);

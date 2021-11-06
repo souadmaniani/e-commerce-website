@@ -16,7 +16,7 @@ router.get("/:category", (req, res) => {
     .catch((err) => res.json(err));
 });
 
-// GET PRODUCTS BY ID
+// GET PRODUCT BY ID
 router.get("/:id", (req, res) => {
   Product.findById({ _id: req.params.id })
     .then((product) => res.json(product))
@@ -37,19 +37,22 @@ router.post("/", (req, res) => {
     .catch((err) => res.json(err));
 });
 
-// ADD COLOR FOR A PRODUCT
+// ADD VARIANTS TO A PRODUCT
 router.post("/:productId", (req, res) => {
   Product.findById({ _id: req.params.productId }).then((product) => {
-    const newColor = {
+    const newVariant = {
+      color: req.body.color,
+      size: req.body.size,
       stock: req.body.stock,
       image: req.body.image,
       images: req.body.images,
-      color: req.body.color,
     };
-    product.colors.unshift(newColor);
+    product.variants.unshift(newVariant);
     product
       .save()
       .then((product) => res.json(product))
       .catch((err) => res.json(err));
   });
 });
+
+module.exports = router
