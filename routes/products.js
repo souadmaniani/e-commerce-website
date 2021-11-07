@@ -5,21 +5,9 @@ const Product = require("../models/Product");
 // GET ALL PRODUCTS
 router.get("/", (req, res) => {
   Product.find({})
+    .sort({ date: -1 })
+    .limit(12)
     .then((products) => res.json(products))
-    .catch((err) => res.json(err));
-});
-
-// GET PRODUCTS BY CATEGORY
-router.get("/:category", (req, res) => {
-  Product.find({ category: req.params.category })
-    .then((products) => res.json(products))
-    .catch((err) => res.json(err));
-});
-
-// GET PRODUCT BY ID
-router.get("/:id", (req, res) => {
-  Product.findById({ _id: req.params.id })
-    .then((product) => res.json(product))
     .catch((err) => res.json(err));
 });
 
@@ -30,6 +18,7 @@ router.post("/", (req, res) => {
     description: req.body.description,
     price: req.body.price,
     category: req.body.category,
+    vars: req.body.vars,
   });
   newProduct
     .save()
@@ -37,22 +26,44 @@ router.post("/", (req, res) => {
     .catch((err) => res.json(err));
 });
 
-// ADD VARIANTS TO A PRODUCT
-router.post("/:productId", (req, res) => {
-  Product.findById({ _id: req.params.productId }).then((product) => {
-    const newVariant = {
-      color: req.body.color,
-      size: req.body.size,
-      stock: req.body.stock,
-      image: req.body.image,
-      images: req.body.images,
-    };
-    product.variants.unshift(newVariant);
-    product
-      .save()
-      .then((product) => res.json(product))
-      .catch((err) => res.json(err));
-  });
+// GET PRODUCT BY ID
+router.get("/:productId", (req, res) => {
+  Product.findById({ _id: req.params.productId })
+    .then((product) => res.json(product))
+    .catch(() =>
+      res.status(404).json({
+        noproduct: `There is no product with id: ${req.params.productId}`,
+      })
+    );
 });
 
-module.exports = router
+// GET PRODUCTS BY CATEGORY
+router.get("/category/:category", (req, res) => {
+  Product.find({ "category.name": req.params.category })
+    .then((products) => res.json(products))
+    .catch((err) => res.json(err));
+});
+
+// DELETE SINGLE PRODUCT
+router.delete("/:productId", (req, res) => {
+  Product.findById({ _id: req.params.productId })
+    .then((product) => {
+      if (!product)
+        res.status(404).json({
+          noproduct: `There is no product with id: ${req.params.productId}`,
+        });
+      else {
+        Product.deleteOne({ _id: req.params.productId })
+          .then(() => res.json({ success: "Product successfully deleted" }))
+          .catch(() =>
+            res.status(404).json({
+              noproduct: `There is no product with id: ${req.params.productId}`,
+            })
+          );
+      }
+    })
+    .catch((err) => res.json(err));
+});
+
+
+module.exports = router;

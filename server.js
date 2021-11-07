@@ -4,6 +4,7 @@ const app = express();
 const db = require("./config/keys_dev").MONGO_URI;
 const cors = require("cors");
 const users = require("./routes/users");
+const variants = require("./routes/variants");
 const products = require("./routes/products");
 const stripeRoute = require("./routes/stripe");
 const passport = require("passport");
@@ -25,6 +26,7 @@ require("./config/passport")(passport);
 
 // Routes
 app.use("/api/v1/users", users);
+app.use("/api/v1/products/variants", variants);
 app.use("/api/v1/products", products);
 app.use("/api/v1/checkout", stripeRoute);
 

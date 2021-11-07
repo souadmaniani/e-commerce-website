@@ -12,25 +12,27 @@ const ProductSchema = new Schema({
   price: {
     type: Number,
   },
-  attributes: {
-    categories: {
-      type: Array,
+  category: {
+    name: { type: String },
+    icon: { type: String },
+  },
+  vars: [
+    {
+      varId: {
+        type: Schema.Types.ObjectId,
+        ref: "variants",
+      },
+      values: [
+        {
+          value: String,
+          images: [],
+        },
+      ],
     },
-    colors: {
-      type: Array,
-    },
-    sizes: {
-      type: Array,
-    },
-    stock: {
-      type: Array,
-    },
-    image: {
-      type: Array,
-    },
-    images: {
-      type: Array,
-    },
+  ],
+  date: {
+    type: Date,
+    default: Date.now,
   },
 });
 
