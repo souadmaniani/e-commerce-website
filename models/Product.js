@@ -9,27 +9,16 @@ const ProductSchema = new Schema({
   description: {
     type: String,
   },
+  category: {
+    type: String,
+  },
+  quantity: {
+    type: number,
+  },
+  images: [],
   price: {
     type: Number,
   },
-  category: {
-    name: { type: String },
-    icon: { type: String },
-  },
-  vars: [
-    {
-      varId: {
-        type: Schema.Types.ObjectId,
-        ref: "variants",
-      },
-      values: [
-        {
-          value: String,
-          images: [],
-        },
-      ],
-    },
-  ],
   date: {
     type: Date,
     default: Date.now,
