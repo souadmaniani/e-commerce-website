@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Product = require("../models/Product");
+const ValidateProductInput = require('../validation/product')
 
 // GET ALL PRODUCTS
 router.get("/", (req, res) => {
@@ -18,6 +19,8 @@ router.get("/", (req, res) => {
 
 // CREATE PRODUCT
 router.post("/", (req, res) => {
+  const { errors, isValid } = ValidateProductInput(req.body);
+  if (!isValid) return res.json(errors);
   const newProduct = new Product({
     title: req.body.title,
     description: req.body.description,
@@ -74,8 +77,10 @@ router.delete("/:productId", (req, res) => {
     .catch(() => res.json(errors));
 });
 
+// UPDATE PRODUCT
 router.put("/:productId", (req, res) => {
-  const errors = {};
+  const { errors, isValid } = ValidateProductInput(req.body);
+  if (!isValid) return res.json(errors);
   errors.noproduct = `There is no product with id: ${req.params.productId}`;
   const productFields = {
     title: req.body.title,

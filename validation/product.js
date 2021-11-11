@@ -24,4 +24,4 @@ const ValidateProductInput = (data) => {
   };
 };
 
-export default ValidateProductInput;
+module.exports = ValidateProductInput;
