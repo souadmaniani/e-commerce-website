@@ -4,10 +4,15 @@ const Product = require("../models/Product");
 
 // GET ALL PRODUCTS
 router.get("/", (req, res) => {
+  const errors = {};
+  errors.noproduct = `no products found`;
   Product.find({})
     .sort({ date: -1 })
     .limit(12)
-    .then((products) => res.json(products))
+    .then((products) => {
+      if (products.length === 0) return res.json(errors);
+      res.json(products);
+    })
     .catch((err) => res.json(err));
 });
 
@@ -16,37 +21,45 @@ router.post("/", (req, res) => {
   const newProduct = new Product({
     title: req.body.title,
     description: req.body.description,
-    price: req.body.price,
     category: req.body.category,
-    vars: req.body.vars,
+    images: req.body.images,
+    quantity: req.body.quantity,
+    price: req.body.price,
   });
   newProduct
     .save()
     .then((product) => res.json(product))
     .catch((err) => res.json(err));
 });
-// .populate("user", ["name", "avatar"])
+
 // GET PRODUCT BY ID
 router.get("/:productId", (req, res) => {
+  const errors = {};
+  errors.noproduct = `There is no product with id: ${req.params.productId}`;
   Product.findById({ _id: req.params.productId })
-    .then((product) => res.json(product))
-    .catch(() =>
-      res.status(404).json({
-        noproduct: `There is no product with id: ${req.params.productId}`,
-      })
-    );
+    .then((product) => {
+      if (!product) return res.json(errors);
+      res.json(product);
+    })
+    .catch(() => res.status(404).json(errors));
 });
 
 // GET PRODUCTS BY CATEGORY
 router.get("/category/:category", (req, res) => {
-  Product.find({ "category.name": req.params.category })
-    .then((products) => res.json(products))
+  const errors = {};
+  errors.noproduct = `There is no product in ${req.params.category} category`;
+  Product.find({ category: req.params.category })
+    .then((products) => {
+      if (products.length === 0) return res.json(errors);
+      res.json(products);
+    })
     .catch((err) => res.json(err));
 });
 
 // DELETE SINGLE PRODUCT
 router.delete("/:productId", (req, res) => {
   const errors = {};
+  errors.noproduct = `There is no product with id: ${req.params.productId}`;
   Product.findById({ _id: req.params.productId })
     .then((product) => {
       if (!product) {
@@ -55,54 +68,33 @@ router.delete("/:productId", (req, res) => {
       } else {
         Product.deleteOne({ _id: req.params.productId })
           .then(() => res.json({ success: "Product successfully deleted" }))
-          .catch(() =>
-            res.status(404).json({
-              noproduct: `There is no product with id: ${req.params.productId}`,
-            })
-          );
+          .catch(() => res.status(404).json(errors));
       }
     })
-    .catch((err) => res.json(err));
+    .catch(() => res.json(errors));
 });
 
-// Person.update({'items.id': 2}, {'$set': {
-//   'items.$.name': 'updated item2',
-//   'items.$.value': 'two updated'
-
-// UPDATE PRODUCT
-// upsert means an update that inserts a new document if no document matches the filter
 router.put("/:productId", (req, res) => {
   const errors = {};
   errors.noproduct = `There is no product with id: ${req.params.productId}`;
-  const filter = { _id: req.params.productId };
-  const update = req.body;
-
-  Product.findById(req.params.productId)
+  const productFields = {
+    title: req.body.title,
+    description: req.body.description,
+    category: req.body.category,
+    images: req.body.images,
+    quantity: req.body.quantity,
+    price: req.body.price,
+  };
+  Product.findOneAndUpdate(
+    { _id: req.params.productId },
+    { $set: productFields },
+    { new: true }
+  )
     .then((product) => {
-      if (!product) return res.status(404).json(errors);
-      product
-        .updateOne(filter, update, { new: true })
-        .then((product) => res.json(product))
-        .catch((err) => res.json(err));
+      if (!product) return res.json(errors);
+      res.json(product);
     })
-    .catch(() => res.status(404).json(errors));
+    .catch(() => res.json(errors));
 });
 
 module.exports = router;
-
-// Create new Product
-// {
-//   "title": "hot jacket",
-//   "description": "hot jacket",
-//   "price": 90,
-//   "category": "jacket",
-//   "vars": [
-//           { "varId": "61884cb53d27cef4192aceb7", "values":
-//               [
-//                   { "value": "red", "images": [{ "src": "img11", "isMain": true}, { "src": "img12"}] },
-//                   { "value": "green", "images": [{ "src": "img21", "isMain": true}, { "src": "img22"}] },
-//                   { "value": "gray", "images": [{ "src": "img31", "isMain": true}, { "src": "img32"}] }
-//               ]
-//           }
-//       ]
-// }
