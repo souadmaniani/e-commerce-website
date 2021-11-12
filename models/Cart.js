@@ -3,7 +3,7 @@ const { Schema, model } = mongoose;
 
 const CartSchema = new Schema({
   user: {
-    type: Schema.Types.objectId,
+    type: Schema.Types.ObjectId,
     ref: "users",
   },
   products: [
@@ -19,6 +19,10 @@ const CartSchema = new Schema({
   ],
   total: {
     type: Number,
+  },
+  date: {
+    type: Date,
+    default: Date.now,
   },
 });
 
