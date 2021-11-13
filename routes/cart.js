@@ -29,34 +29,36 @@ router.get(
   }
 );
 
-// CREATE NEW CART
+// ADD PRODUCT TO CART
 router.post(
   "/",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    const cartFields = {};
-
-    cartFields.user = req.user.id;
-    cartFields.products = req.products;
-    cartFields.total = req.total;
-    User.findById({ _id: req.user.id }).then((user) => {
-      if (user) {
-        // UPDATE CART
-        Cart.findOneAndUpdate(
-          { user: req.user.id },
-          { $set: cartFields },
-          { new: true }
-        )
-          .then((cart) => res.json(cart))
-          .catch((err) => res.json(err));
-      } else {
-        // CREATE NEW CART
-        new Cart(cartFields)
-          .save()
-          .then((cart) => res.json(cart))
-          .catch((err) => res.json(err));
-      }
-    });
+    Cart.findOne({ user: req.user.id })
+      .populate("user", ["name"], "products", ["title"])
+      .then((cart) => {
+        if (!cart) {
+          new Cart({ user: req.user.id, products: [], total: 0 })
+            .save()
+            .then((cart) => res.json(cart))
+            .catch((err) => res.json(err));
+        } else {
+          cart.user = req.user.id;
+          let index;
+          cart.total = req.body.total;
+          if (
+            (index = cart.products.map(e => e.productId).indexOf(req.body.product.productId)) !== -1
+          ) {
+            cart.products[index].quantity = req.body.product.quantity;
+          } else {
+            cart.products.unshift(req.body.product);
+          }
+          cart
+            .save()
+            .then((cart) => res.json(cart))
+            .catch((err) => res.json(err));
+        }
+      });
   }
 );
 

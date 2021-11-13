@@ -6,6 +6,7 @@ const cors = require("cors");
 const users = require("./routes/users");
 const products = require("./routes/products");
 const cart = require("./routes/cart");
+const order = require("./routes/order");
 const stripeRoute = require("./routes/stripe");
 const passport = require("passport");
 
@@ -28,6 +29,7 @@ require("./config/passport")(passport);
 app.use("/api/v1/users", users);
 app.use("/api/v1/products", products);
 app.use("/api/v1/cart", cart);
+app.use("/api/v1/order", order);
 app.use("/api/v1/checkout", stripeRoute);
 
 app.listen(port, () => console.log(`server listening on port ${port}`));
